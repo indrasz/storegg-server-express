@@ -13,9 +13,9 @@ module.exports = {
         res.render('admin/users/view_signin', {
           alert,
           title : 'Halaman signin'
-        })
+        });
       } else {
-        res.redirect('/dashboard')
+        res.redirect('/dashboard');
       }
     } catch (err) {
       req.flash('alertMessage', `${err.message}`)
