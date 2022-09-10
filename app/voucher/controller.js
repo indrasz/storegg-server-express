@@ -1,6 +1,7 @@
 const Voucher = require('./model')
 const Category = require('../category/model')
 const Nominal = require('../nominal/model')
+const Payment = require('../payment/model')
 const path = require('path')
 const fs = require('fs')
 const config = require('../../config')
@@ -15,6 +16,7 @@ module.exports = {
       const voucher = await Voucher.find()
       .populate('category')
       .populate('nominals')
+      .populate('payment')
       
       res.render('admin/voucher/view_voucher', {
         voucher,
@@ -33,9 +35,11 @@ module.exports = {
     try {
       const category = await Category.find()
       const nominal = await Nominal.find()
+      const payment = await Payment.find()
       res.render('admin/voucher/create', {
         category,
         nominal,
+        payment,
         name: req.session.user.name,
         title: 'Halaman tambah voucher'
       })
@@ -48,7 +52,7 @@ module.exports = {
 
   actionCreate: async (req, res) => {
     try {
-      const { name, category, nominals } = req.body
+      const { name, category, nominals, payment } = req.body
 
       if(req.file){
         let tmp_path= req.file.path;
@@ -68,6 +72,7 @@ module.exports = {
               name,
               category,
               nominals,
+              payment,
               thumbnail: filename
             })
 
@@ -89,6 +94,7 @@ module.exports = {
           name,
           category,
           nominals,
+          payment,
         })
 
         await voucher.save();
@@ -110,14 +116,17 @@ module.exports = {
       const { id } = req.params
       const category = await Category.find()
       const nominal = await Nominal.find()
+      const payment = await Payment.find()
       const voucher = await Voucher.findOne({ _id: id })
         .populate('category')
         .populate('nominals')
+        .populate('payment')
 
       res.render('admin/voucher/edit', {
         voucher,
         nominal,
         category,
+        payment,
         name: req.session.user.name,
         title: 'Halaman ubah voucher'
       })
@@ -132,7 +141,7 @@ module.exports = {
   actionEdit: async (req, res) => {
     try {
       const { id } = req.params
-      const { name, category, nominals } = req.body
+      const { name, category, nominals, payment } = req.body
 
       if(req.file){
         let tmp_path= req.file.path;
@@ -161,6 +170,7 @@ module.exports = {
               name,
               category,
               nominals,
+              payment,
               thumbnail: filename
             })
             
@@ -183,6 +193,7 @@ module.exports = {
           name,
           category,
           nominals,
+          payment
         })
         
         req.flash('alertMessage', "Berhasil ubah voucher")
