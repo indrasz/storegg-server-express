@@ -42,7 +42,7 @@ module.exports = {
     try {
       const { banks, type } = req.body
 
-      let payment = await Payment({ banks, type })
+      const payment = new Payment({ banks, type })
       await payment.save();
 
       req.flash('alertMessage', "Berhasil tambah payment")
